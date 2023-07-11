@@ -1,7 +1,13 @@
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+
 server:
   port: 8080
-  
-  
+
 spring:
   application:
     name: USER-SERVICE
@@ -16,12 +22,3 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
-eureka:
-  client:
-    fetch-registry: true
-    register-with-eureka: true
-    service-url:
-      default-zone: http://localhost:8761/eureka
-    instance:
-      hostname: localhost
