@@ -13,3 +13,4 @@ spring:
           search-paths: config-data
           clone-on-start: true
           
+          
