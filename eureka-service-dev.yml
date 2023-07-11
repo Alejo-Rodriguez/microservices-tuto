@@ -3,13 +3,13 @@ server:
 
 spring:
   application:
-    name: EUREKA-SERVICE 
+    name: eureka-service
   
 eureka:
-  instance: 
+  instance:
     hostname: localhost
   client:
-    fetch-registry: false
-    register-with-eureka: false
+    fetchRegistry: 'false'
+    registerWithEureka: 'false'
     
     
