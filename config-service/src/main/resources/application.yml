@@ -11,4 +11,5 @@ spring:
           default-label: eureka
           uri: https://github.com/alejorcode/microservices-tuto
           search-paths: config-data
+          clone-on-start: true
           
