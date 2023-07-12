@@ -8,7 +8,7 @@ spring:
     config:
       server:
         git:
-          default-label: eureka
+          default-label: multiple-instances
           uri: https://github.com/alejorcode/microservices-tuto
           search-paths: config-data
           clone-on-start: true
