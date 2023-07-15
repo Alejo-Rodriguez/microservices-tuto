@@ -3,6 +3,8 @@ package com.user.service.controller;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,11 +19,17 @@ import com.user.service.models.Car;
 import com.user.service.models.Motorcycle;
 import com.user.service.service.UserService;
 
+import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
 	@Autowired
 	private UserService userService;
+	
+	private Logger logger = LoggerFactory.getLogger(UserController.class);
+	
+	
 
 	@GetMapping
 	public ResponseEntity<List<User>> listAllUsers() {
@@ -49,6 +57,7 @@ public class UserController {
 	}
 
 	// RestTemplate
+	@CircuitBreaker(name="carsCB", fallbackMethod = "fallBackGetCars")
 	@GetMapping("/cars/{userId}")
 	public ResponseEntity<List<Car>> listCars(@PathVariable("userId") int id) {
 		User user = userService.getUserById(id);
@@ -60,6 +69,7 @@ public class UserController {
 	}
 
 	// RestTemplate
+	@CircuitBreaker(name="motorcyclesCB", fallbackMethod = "fallBackGetMotorcycles")
 	@GetMapping("/motorcycles/{userId}")
 	public ResponseEntity<List<Motorcycle>> listMotorcycles(@PathVariable("userId") int id) {
 		User user = userService.getUserById(id);
@@ -71,6 +81,7 @@ public class UserController {
 	}
     
 	// FeignClient
+	@CircuitBreaker(name="carsCB", fallbackMethod = "fallBackSaveCar")
 	@PostMapping("/car/{userId}")
 	public ResponseEntity<Car> saveCar(@PathVariable("userId") int userId, @RequestBody Car car) {
 		Car newCar = userService.saveCar(userId, car);
@@ -78,6 +89,7 @@ public class UserController {
 	}
 	
 	// FeignClient
+	@CircuitBreaker(name="motorcyclesCB", fallbackMethod = "fallBackSaveMotorcycle")
 	@PostMapping("/motorcycle/{userId}")
 	public ResponseEntity<Motorcycle>saveMotorcycle(@PathVariable("userId") int userId,@RequestBody Motorcycle motorcycle){
 		Motorcycle newMotorcycle=userService.saveMotorcycle(userId, motorcycle);
@@ -85,11 +97,38 @@ public class UserController {
 	}
 	
 	// FeignClient
+	@CircuitBreaker(name="allCB", fallbackMethod = "fallBackGetAll")
 	@GetMapping("/all/{userId}")
 	public ResponseEntity<Map<String, Object>>listAllVehicles(@PathVariable("userId") int userId){
 		Map<String, Object>result=userService.getUserAndCars(userId);
 		return ResponseEntity.ok(result);
 	}
+	
+	public ResponseEntity<List<Car>> fallBackGetCars(@PathVariable("userId") int id,Exception ex) {
+		logger.info("The user : " + id + " has the cars in the workshop"+ex.getMessage());
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
+	} 
+
+	public ResponseEntity<List<Car>> fallBackSaveCar(@PathVariable("userId") int id,@RequestBody Car car,Exception ex) {
+		logger.info("The user : " + id + " has no money for cars"+ex.getMessage());
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
+	} 
+	
+	public ResponseEntity<List<Motorcycle>> fallBackGetMotorcycles(@PathVariable("userId") int id,Exception ex) {
+		logger.info("The user : " + id + " has the motorcycles in the workshop"+ex.getMessage());
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
+	} 
+
+	public ResponseEntity<List<Motorcycle>> fallBackSaveMotorcycle(@PathVariable("userId") int id,@RequestBody Motorcycle motorcycle,Exception ex) {
+		logger.info("The user : " + id + " has no money for Motorcycles"+ex.getMessage());
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
+	} 
+	
+	public ResponseEntity<Map<String, Object>> fallBackGetAll(@PathVariable("userId") int id,Exception ex) {
+		logger.info("The user : " + id + " has the vehicles in the workshop"+ex.getMessage());
+		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
+	} 
+	
 	
 
 }
