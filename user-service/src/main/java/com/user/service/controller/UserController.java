@@ -109,7 +109,7 @@ public class UserController {
 		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 	} 
 
-	public ResponseEntity<List<Car>> fallBackSaveCar(@PathVariable("userId") int id,@RequestBody Car car,Exception ex) {
+	public ResponseEntity<Car> fallBackSaveCar(@PathVariable("userId") int id,@RequestBody Car car,Exception ex) {
 		logger.info("The user : " + id + " has no money for cars"+ex.getMessage());
 		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 	} 
@@ -119,7 +119,7 @@ public class UserController {
 		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 	} 
 
-	public ResponseEntity<List<Motorcycle>> fallBackSaveMotorcycle(@PathVariable("userId") int id,@RequestBody Motorcycle motorcycle,Exception ex) {
+	public ResponseEntity<Motorcycle> fallBackSaveMotorcycle(@PathVariable("userId") int id,@RequestBody Motorcycle motorcycle,Exception ex) {
 		logger.info("The user : " + id + " has no money for Motorcycles"+ex.getMessage());
 		return new ResponseEntity<>(org.springframework.http.HttpStatus.OK);
 	} 
