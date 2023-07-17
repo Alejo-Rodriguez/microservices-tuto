@@ -17,12 +17,15 @@ import com.user.service.models.Car;
 import com.user.service.models.Motorcycle;
 import com.user.service.service.UserService;
 
+
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
+	
 	@Autowired
 	private UserService userService;
-
+	
 	@GetMapping
 	public ResponseEntity<List<User>> listAllUsers() {
 		List<User> users = userService.getAllUser();
@@ -90,6 +93,7 @@ public class UserController {
 		Map<String, Object>result=userService.getUserAndCars(userId);
 		return ResponseEntity.ok(result);
 	}
+	
 	
 
 }
